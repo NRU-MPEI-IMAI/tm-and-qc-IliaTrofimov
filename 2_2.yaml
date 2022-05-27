@@ -1,0 +1,32 @@
+name: three equal lengths
+source code: |-
+  input: '[()()}]'
+  blank: ' '
+  start state: right
+  table:
+    right: # движемся вправо, пока не найдём откр. скобку
+      ['(','{','[',A,B,C]: R
+      ')': {write: A, L: qA}
+      ']': {write: B, L: qB}
+      '}': {write: C, L: qC}
+      ' ': {write: T, R: end}
+    qA:   # ищем (, другие откр. скобки говорят о неправильности слова
+      [' ','[','{']: {write: F, R: end} 
+      [,A,B,C,']','}']: L
+      '(': {write: A, R: right}
+    qB:   # ищем [
+      [' ','(','{']: {write: F, R: end} 
+      [A,B,C,')','}']: L
+      '[': {write: B, R: right}
+    qC:   # ищем {
+      [' ','(','[']: {write: F, R: end} 
+      [A,B,C,')',']']: L
+      '{': {write: C, R: right}
+    end:  
+      [A,B,C,' ']: L
+positions:
+  right: {x: 304.05, y: 406.95}
+  qA: {x: 356.37, y: 198.01}
+  qB: {x: 415.12, y: 201.04}
+  qC: {x: 469.81, y: 205}
+  end: {x: 530.77, y: 402.43}
