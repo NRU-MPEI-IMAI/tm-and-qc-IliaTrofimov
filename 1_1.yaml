@@ -1,0 +1,50 @@
+name: unary multiplication
+source code: |
+  input: '11*111'
+  blank: ' '
+
+  start state: eachA
+  table:
+    # Копируем B A раз, для этого уменьшаем A и на каждой итерации желаем одну копию.
+    eachA:              # Уменьшаем A на 1
+      '1': {write: ' ', R: toB}  
+      '*': {R: skip}             
+    toB:                # Движемся к началу B
+      '1': R
+      '*': {R: eachB}   # Начинаем копировать
+    nextA:              # Движемся к началу A
+      ' ': {write: '1', R: eachA}
+      ['1','*']: L
+
+    skip:   # Движемся к результату 
+      '1': R
+      ' ': {R: done}
+    done:
+
+    # Копирование B
+    eachB:
+      ' ': {L: nextA}
+      '1': {write: ' ', R: sep}
+    sep:
+      ' ': {R: add}
+      '1': R
+    add:
+      ' ': {write: '1', L: sepL}
+      '1': R
+    sepL:
+      ' ': {L: nextB}
+      '1': L
+    nextB:
+      ' ': {write: '1', R: eachB}
+      '1': L
+positions:
+  eachA: {x: 400, y: 50}
+  toB: {x: 400, y: 150}
+  nextA: {x: 280, y: 90}
+  skip: {x: 520, y: 90}
+  done: {x: 520, y: 190}
+  eachB: {x: 400, y: 250}
+  sep: {x: 400, y: 350}
+  add: {x: 400, y: 450}
+  sepL: {x: 280, y: 350}
+  nextB: {x: 280, y: 250}
