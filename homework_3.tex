@@ -150,7 +150,26 @@
         \end{center}
          Код для реализации машины Тьюринга доступен по
         \href{https://github.com/NRU-MPEI-IMAI/tm-and-qc-IliaTrofimov/blob/main/2_2.yaml}{этой ссылке}.
-
+        
+                \item \textbf{Поиск минимальной строки}\\
+        Машина Тьюринга принимает последовательность строк из 0 и 1, разделённых тире (т.к. в turingmachine.io пробелом отмечается пустой символ) и в конце своей работы устаналивает каретку на начало наименьшей строки.\\
+        Для нахождения минимальной строки будем помечать по одному символу каждой строки до тех пор пока не дойдём до разделителя-тире. После этого счтиаем, что минимальная строка найдена (она позади). Зачищаем ленту от ненужных строк и возвращаем каретку. Готово.\\
+        Составим таблицу переходов:
+        \begin{center}
+            \begin{tabular}{ |c||с|c|c|c|c|c| }
+            \hline
+            состояние & 0 & 1 & a & b & - & \varepsilon \\\hline \hline
+            mark & next, a, R & next, b, R & R & R & clear, R & reset, L \\\hline
+            next & R & R & & & mark, R & back, L \\\hline
+            back & L & L & L & L & L & mark, R \\\hline
+            clear& \varepsilon,R &  \varepsilon,R & \varepsilon,R &  \varepsilon,R &  \varepsilon,R & return, L \\\hline
+            return & & & & & \varepsilon,R & reset, L \\\hline
+            reset & 0, L & 1, L & & & done, R & done, R\\\hline
+            done & H & H & & & & H \\\hline
+            \end{tabular}
+        \end{center}
+        Код для реализации машины Тьюринга доступен по
+        \href{https://github.com/NRU-MPEI-IMAI/tm-and-qc-IliaTrofimov/blob/main/2_3.yaml}{этой ссылке}.
     
     \end{enumerate}
     
