@@ -1,0 +1,44 @@
+name: three equal lengths
+source code: |-
+  input: '111'
+  blank: ' '
+  start state: mark
+  table:
+    mark: 
+      [a,b]: R
+      '-': {R: clear}
+      ' ': {L: reset}
+      0: {write: a, R: next}
+      1: {write: b, R: next}
+      
+    next:
+      [0,1]: R
+      '-': {R: mark}
+      ' ': {L: back}
+    
+    back:
+      [0,1,a,b,'-']: L
+      ' ': {R: mark}
+    
+    clear:
+      [0,1,a,b,'-']: {write: ' ', R}
+      ' ': {L: return} 
+    
+    return: 
+      ' ': L
+      '-': {write: ' ', L: reset}
+    
+    reset:
+      a: {write: 0, L}
+      b: {write: 1, L}
+      ['-',' ']: {R: done}
+    
+    done:
+positions:
+  mark: {x: 415.93, y: 268.48, fixed: false}
+  next: {x: 405.87, y: 409.62, fixed: false}
+  back: {x: 534.37, y: 347.56, fixed: false}
+  clear: {x: 510.45, y: 160.17, fixed: false}
+  return: {x: 396.36, y: 73.95, fixed: false}
+  reset: {x: 302.09, y: 180.28, fixed: false}
+  done: {x: 226.77, y: 300.57, fixed: false}
