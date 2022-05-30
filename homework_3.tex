@@ -173,4 +173,104 @@
     
     \end{enumerate}
     
+        \textbf{ЗАДАНИЕ 3. Квантовые вычисления}\\ 
+    Все функции для решений следующих заданий расположены в репозитории по \href{https://github.com/NRU-MPEI-IMAI/tm-and-qc-IliaTrofimov/blob/main/task-3.qs}{этой ссылке}.
+    \begin{enumerate}
+        \item \textbf{Генерация суперпозиций.}\\
+        Дано $N$ кубитов ($1 \le N \le 8$) в нулевом состоянии $\Ket{0\dots0}$. Также дана некоторая последовательность битов, которое задаёт ненулевое базисное состояние размера $N$. Задача получить суперпозицию нулевого состояния и заданного.\\
+        Решение на Q\#: \begin{verbatim}
+operation Set (desired: Result, q1: Qubit) : () {
+    body {
+        let current = M(q1);
+        if (desired != current) { 
+            X(q1);
+        }
+    }
+}
+
+operation Super(qs: Qubit[], bits: Bool[]) : () {
+    body {   
+        // Предварительно зануляем кубиты
+        for (q in qs) {
+            Set(Zero, q);
+        }
+        
+        H(qs[0]);
+        for (i in 1..Length(qs) - 1) {
+            if (bits[i]) {
+                CNOT(qs[0], qs[i]); 
+            } 
+        }                  
+    }
+}
+        \end{verbatim}
+        Схема для случая \(|0 0 0 0 \rangle\), \(|1 0 1 1 \rangle\): 
+        \begin{center}
+            \includegraphics[scale=0.5]{1.png}
+        \end{center}
+        
+        \item \textbf{Различие состояний 1.}\\
+        Дано $N$ кубитов ($1 \le N \le 8$), которые могут быть в одном из двух состояний:
+        $$\Ket{GHZ} = \frac{1}{\sqrt2}(\Ket{0\dots0} +\Ket{1\dots1})$$
+        $$\Ket{W} = \frac{1}{\sqrt N}(\Ket{10\dots00}+\Ket{01\dots00} + \dots +\Ket{00\dots01})$$
+        Требуется выполнить необходимые преобразования, чтобы точно различить эти два состояния. Возвращать $0$, если первое состояние и 1, если второе.\\
+        Решение на Q\#: \begin{verbatim}
+operation Determine1(qs: Qubit[]) : Int {
+    body {   
+        mutable ones = 0;
+        for (q in qs) {
+            if (M(q) == One) { 
+                set ones = ones + 1; 
+            }
+        }
+        if (ones == 1) {
+            return 1;
+        } 
+        else {
+            return 0;
+        }                
+    }
+}
+        \end{verbatim}
+        
+        \item \textbf{Различие состояний 2.}\\
+        Дано $2$ кубита, которые могут быть в одном из двух состояний:
+        $$\Ket{S_0} = \frac{1}{2}(\Ket{00} + \Ket{01} + \Ket{10} + \Ket{11}), \ \Ket{S_1} = \frac{1}{2}(\Ket{00} - \Ket{01} + \Ket{10} - \Ket{11}),$$
+        $$\Ket{S_2} = \frac{1}{2}(\Ket{00} + \Ket{01} - \Ket{10} - \Ket{11}), \ \Ket{S_3} = \frac{1}{2}(\Ket{00} - \Ket{01} - \Ket{10} + \Ket{11}$$
+        Требуется выполнить необходимые преобразования, чтобы точно различить эти четыре состояния. Возвращать требуется индекс состояния (от $0$ до $3$).\\
+        Решение на Q\#: 
+        \begin{verbatim}
+ operation Determine2(q1: Qubit, q2: Qubit) : Int {
+    if (M(q1) == Zero) {
+        if (M(q2) == Zero) { return 0; } 
+        else { return 1; }
+    }
+    else {
+        if (M(q2) == Zero) { return 2; } 
+        else { return 3; }
+    }
+}
+    \end{verbatim}
+    
+    \item \textbf{Написание оракула.}\\
+    Требуется реализовать квантовый оракул на $N$ кубитах ($1 \le N \le 8$), который реализует следующую функцию: $f(\pmb{x}) = (\pmb{b}\pmb{x}) \mod 2$, где  $\pmb{b} \in \{0,1\}^N$ вектор битов и  $\pmb{x}$ вектор кубитов. Выход функции записать в кубит $\pmb{y}$. Количество кубитов $N$ ($1 \le N \le 8$).\\
+    Решение на Q\#: 
+    \begin{verbatim}
+operation Oracle(x : Qubit[], y : Qubit, b : Int[]) : () {
+    body {
+        for (i in 0..Length(x) - 1) {
+            if (b[i] == 1) {
+                CNOT(x[i], y);
+            } 
+            else {
+                Set(Zero, y);
+            }
+        }
+    }
+} 
+    \end{verbatim}
+    \end{enumerate}
+    
+    Все функции для решений следующих заданий расположены в репозитории по \href{https://github.com/NRU-MPEI-IMAI/tm-and-qc-IliaTrofimov/blob/main/task-3.qs}{этой ссылке}.
+    
 \end{document}
